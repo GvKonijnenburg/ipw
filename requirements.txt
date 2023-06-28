@@ -1,0 +1,1 @@
+spacy-models-nl_core_news_lg==3.5.0
