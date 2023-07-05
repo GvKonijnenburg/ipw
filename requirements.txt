@@ -1,1 +1,5 @@
-spacy-models-nl_core_news_lg==3.5.0
+matplotlib==3.7.1
+numpy==1.25.0
+pandas==1.5.3
+pyarrow==11.0.0
+spacy==3.5.3
