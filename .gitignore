@@ -168,3 +168,4 @@ cython_debug/
 /ipw_classifier/.vs
 /ipw_classifier/data
 /ipw_classifier/trial
+log.txt
