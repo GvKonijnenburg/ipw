@@ -1,0 +1,5 @@
+2023-07-06 11:16:49,199 INFO Number of records in table case: 3599
+2023-07-06 11:16:49,484 INFO Number of records in table situation: 711
+2023-07-06 11:16:49,770 INFO Number of records in table plan: 687
+2023-07-06 11:16:49,785 INFO Number of records in combined table: 718
+2023-07-06 11:16:49,801 INFO Number of closed records in combined table: 392

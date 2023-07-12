@@ -1,8 +1,17 @@
 from bs4 import BeautifulSoup
 from dataclasses import dataclass
 from uuid import UUID
-from typing import Dict
+from typing import Set
 import math
+import numpy as np
+#import spacy
+import nl_core_news_lg
+
+#Variables
+nlp = nl_core_news_lg.load()
+
+#Constants
+NOUN: str = 'NOUN'
 
 @dataclass()  
 class Case:
@@ -32,7 +41,7 @@ class Case:
         treatment: str,  
         description: str,  
         solution: str,  
-        future: str,  
+        future: str 
     ):  
         self.id = id  
         self.perspective = self._clean_input(perspective)  
@@ -48,22 +57,51 @@ class Case:
         self.future = self._clean_input(future)  
   
     def _clean_input(self, string: str) -> str:  
-        if string is None or (isinstance(string, float) and math.isnan(string)): 
-            return ''  
-        else:  
+        returnvalue = ''
+        
+        if string is not None and not (isinstance(string, float) and math.isnan(string)): 
+            # parse html
             soup = BeautifulSoup(string, 'html.parser')
-            return soup.getText()
+            returnvalue = soup.getText()
 
-    def word_count(string:str, returnvalue:Dict[str, int] = None) -> Dict[str, int]:
-        if returnvalue = None:
+            # remove '\\n'
+            returnvalue = returnvalue.replace('\\n', '')
 
-        words = string.split()
-        for word in words:
-            if word in returnvalue:
-                returnvalue[word] += 1
-            else:
-                returnvalue[word] = 1
-        return returnvalue()
+        return returnvalue
+ 
+    def vector(self):
+        string = self.description.lower()
+        tokens = nlp(string)
+        n = 0
+        for token in tokens:
+            if token.pos_ == NOUN:
+                n += 1
+                if n == 1:
+                    vector_sum = token.vector
+                else:
+                    vector_sum += token.vector
+        if n > 0:
+            returnvalue = vector_sum / n
+        else:
+            returnvalue = nlp('').vector
+        return returnvalue
+
+    def norm(self) -> float:
+        return np.linalg.norm(self.vector())
+    
+    def distance(self, case) -> float:
+        vector1 = self.vector()
+        vector2 = case.vector()
+
+        if self.norm() == 0:
+            raise ValueError(f'Vector length is 0 for sample {self.id}. This sample should not be part of the clustering algorithm')
+        if case.norm() == 0:
+            raise ValueError(f'Vector length is 0 for sample {case.id}. This sample should not be part of the clustering algorithm')
+
+        similarity = np.dot(vector1, vector2) / (self.norm() * case.norm())
+        similarity = max(-1.0, min(1.0, similarity)) # to remove corner cases from rounding
+        returnvalue = 1 - similarity # to create a distance that is 0 for equal cases (similarity = 1) and 2 for cases that are very far apart
+        return returnvalue
 
 
 
