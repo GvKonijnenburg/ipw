@@ -55,7 +55,7 @@ def main() -> List[Case]:
     for index, row in df.iterrows():
         case = row_to_case(row)
 
-        if case.norm() != 0:
+        if case.norm != 0.0:
             returnvalue.append(case)
         
     return returnvalue
