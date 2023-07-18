@@ -1,14 +1,13 @@
 import logging
 import pandas as pd
 import pyarrow.dataset as ds
-from settings.constants import DATA_PATH
-from models import Case
+from bs4 import BeautifulSoup
 from pathlib import Path
-from typing import List
-from uuid import UUID
 
-def _parse(table_name: str) -> pd.DataFrame:
-    parquet_path = DATA_PATH / f'{table_name}.parquet'
+PARQUET_SUFFIX = '.parquet'
+
+def _parse(path: Path, table_name: str) -> pd.DataFrame:
+    parquet_path = path / f"{table_name}{PARQUET_SUFFIX}"
     table = ds.dataset(parquet_path).to_table()
     df = table.to_pandas()
 
@@ -19,43 +18,62 @@ def _parse(table_name: str) -> pd.DataFrame:
             raise ValueError(f'Duplicate values found in "case_id" column in table {table_name}.')
         
         df.rename(columns = {'id': f'{table_name}_id'}, inplace = True)
-   
-    return df
     
-def row_to_case(row: pd.Series) -> Case:  
-    id = UUID(int=int.from_bytes(row['id'], 'little'))  
-    case = Case(  
-        id=id,  
-        perspective=row['perspective'],  
-        milestones=row['milestones'],  
-        scenarios=row['scenarios'],  
-        breakthrough=row['breakthrough'],  
-        exception=row['exception'],  
-        do_self=row['do_self'],  
-        support=row['support'],  
-        treatment=row['treatment'],  
-        description=row['description'],  
-        solution=row['solution'],  
-        future=row['future']  
-    )  
-    return case  
+    columns_to_drop = set([
+        'author',
+        'rights', 
+        'created',
+        'updated',
+        'deleted',
+        'owners',
+        'source',
+        'closed'
+        ])
+    columns = columns_to_drop.intersection(set(df.columns))  
+    
+    for col_name in columns:
+        df.drop(col_name, axis = 1, inplace = True)
+    return df
 
-def main() -> List[Case]:
-    case = _parse('case')
-    situation = _parse('situation')
-    plan = _parse('plan')
+def load(path_in: str) -> pd.DataFrame:
+    path = Path(path_in)
+    
+    
+    case = _parse(path, 'case')
+    situation = _parse(path, 'situation')
+    plan = _parse(path, 'plan')
     
     df_sit_pln = plan.merge(situation, left_on = 'case_id', right_on = 'case_id', how = 'outer', suffixes = ('_pln', '_sit'))
     df = df_sit_pln.merge(case, left_on = 'case_id', right_on = 'id', how = 'left')
-    logging.info(f'Number of records in combined table: {len(df)}')
-    df = df[df['status'] == 'closed']
-    logging.info(f'Number of closed records in combined table: {len(df)}')
-        
-    returnvalue = []
-    for index, row in df.iterrows():
-        case = row_to_case(row)
+    
+    df.drop('case_id', axis = 1, inplace = True)
 
-        if case.norm != 0.0:
-            returnvalue.append(case)
+    to_drop = [
+        'plan_id',
+        'situation_id',
+        'title',
+        'collection_id',
+        'author_id'
+    ]
+    df = df.drop(to_drop, axis = 1)
+    df = df.set_index('id')
+
+    return df
+
+def clean_string(string:str) -> str:
+    returnvalue = ''
+    if string is not None and not isinstance(string, float):
         
+        # parse html
+        soup = BeautifulSoup(string, 'html.parser')
+        returnvalue = soup.getText()
+        
+        # remove '\n'
+        returnvalue = returnvalue.replace('\\n', '')
     return returnvalue
+
+
+def clean(df: pd.DataFrame) -> pd.DataFrame:
+    for column in df.columns:  
+        df[column] = df[column].apply(clean_string)
+    return df

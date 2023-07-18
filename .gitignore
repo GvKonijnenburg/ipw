@@ -164,8 +164,8 @@ cython_debug/
 *.pyproj
 
 # Specifics
+/data
 /env_ipw
 /ipw_classifier/.vs
-/ipw_classifier/data
 /ipw_classifier/trial
 log.txt
