@@ -162,7 +162,7 @@ cython_debug/
 # Visual studio
 /.vs/*
 /ipw_clusterer/.vs/*
-/ipw_clusterer/src/.vs/*
+/ipw_clusterer/ipw/.vs/*
 *.pyproj
 
 # Specifics
