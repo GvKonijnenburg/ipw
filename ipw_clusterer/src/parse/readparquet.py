@@ -1,7 +1,6 @@
 import logging
 import pandas as pd
 import pyarrow.dataset as ds
-from bs4 import BeautifulSoup
 from pathlib import Path
 
 PARQUET_SUFFIX = '.parquet'
@@ -35,7 +34,7 @@ def _parse(path: Path, table_name: str) -> pd.DataFrame:
         df.drop(col_name, axis = 1, inplace = True)
     return df
 
-def load(path_in: str) -> pd.DataFrame:
+def read(path_in: str) -> pd.DataFrame:
     path = Path(path_in)
     
     
@@ -58,22 +57,4 @@ def load(path_in: str) -> pd.DataFrame:
     df = df.drop(to_drop, axis = 1)
     df = df.set_index('id')
 
-    return df
-
-def clean_string(string:str) -> str:
-    returnvalue = ''
-    if string is not None and not isinstance(string, float):
-        
-        # parse html
-        soup = BeautifulSoup(string, 'html.parser')
-        returnvalue = soup.getText()
-        
-        # remove '\n'
-        returnvalue = returnvalue.replace('\\n', '')
-    return returnvalue
-
-
-def clean(df: pd.DataFrame) -> pd.DataFrame:
-    for column in df.columns:  
-        df[column] = df[column].apply(clean_string)
     return df
