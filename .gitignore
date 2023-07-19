@@ -161,11 +161,14 @@ cython_debug/
 
 # Visual studio
 /.vs/*
+/ipw_clusterer/.vs/*
+/ipw_clusterer/src/.vs/*
 *.pyproj
 
 # Specifics
+*.csv
 /data
 /env_ipw
-/ipw_clusterer/.vs
+
 /ipw_clusterer/trial
 log.txt

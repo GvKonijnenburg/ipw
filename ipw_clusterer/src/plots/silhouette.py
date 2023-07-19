@@ -5,7 +5,9 @@ import numpy as np
 from matplotlib.ticker import MaxNLocator  
 from sklearn import metrics
 
-def silhouette(dist_matrix, labels):
+def silhouette(dist_matrix, labels_in, adjustment = 0):
+    labels = labels_in + adjustment
+
     n_clusters = labels.max() + 1
     # Compute the silhouette scores for each sample
     sample_silhouette_values = metrics.silhouette_samples(dist_matrix, labels, metric = 'precomputed')
@@ -47,7 +49,7 @@ def silhouette(dist_matrix, labels):
         )
 
         # Label the silhouette plots with their cluster numbers at the middle
-        ax.text(min_sil, y_lower + 0.5 * size_cluster_i, str(i))
+        ax.text(min_sil, y_lower + 0.5 * size_cluster_i, str(i - adjustment))
 
         # Compute the new y_lower for next plot
         y_lower = y_upper + 10  # 10 for the 0 samples
