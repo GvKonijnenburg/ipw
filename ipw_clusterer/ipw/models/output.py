@@ -1,7 +1,4 @@
 import numpy as np
-from ..plots.silhouette import silhouette
-from ..plots.histogram_labels import histogram_labels
-
 
 def output(dist_matrix, results, labels):
     print('Cluster size per cluster')
@@ -28,5 +25,3 @@ def output(dist_matrix, results, labels):
         elif column == 'dbi':
             print(f'Davies-Bouldin Index: {best.iloc[0][column]:0.3f}')
 
-    histogram_labels(labels)
-    silhouette(dist_matrix, labels)
