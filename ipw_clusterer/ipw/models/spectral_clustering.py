@@ -1,11 +1,12 @@
+import math
 import numpy as np
 import pandas as pd
 from sklearn import metrics
 from sklearn.cluster import SpectralClustering
 
 def spectral_clustering(dist_matrix: np.ndarray, clusters, random_state: int = None):
-    aff_matrix = 2 - dist_matrix
-    
+    aff_matrix = np.cos(math.pi * dist_matrix)
+        
     # setup results dataframe
     df_prep = []
     for n in clusters:

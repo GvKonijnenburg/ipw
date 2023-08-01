@@ -1,4 +1,5 @@
 import pandas as pd
+import unicodedata
 from bs4 import BeautifulSoup
 
 def _clean_string(string:str) -> str:
@@ -11,6 +12,9 @@ def _clean_string(string:str) -> str:
         
         # remove '\n'
         returnvalue = returnvalue.replace('\\n', '')
+
+        # normalize the string
+        returnvalue = unicodedata.normalize('NFKC', returnvalue)
     return returnvalue
 
 

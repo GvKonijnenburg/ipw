@@ -1,3 +1,4 @@
+from itertools import count
 from .add_word_count_to_dict import add_word_count_to_dict
 from ..enums.model import Model
 
@@ -11,9 +12,8 @@ def words_per_label(df, model, run):
         words = df.loc[i, 'text']
         
         if label in returnvalue:
-            returnvalue[label] = add_word_count_to_dict(words, returnvalue[label])
+            returnvalue[label] = add_word_count_to_dict(words, returnvalue[label], count_all = False)
         else:
-            dict = {}
-            returnvalue[label] = add_word_count_to_dict(words, dict)
+            returnvalue[label] = add_word_count_to_dict(words, {}, count_all = False)
 
     return returnvalue
