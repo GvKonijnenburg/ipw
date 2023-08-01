@@ -18,8 +18,3 @@ def distance_matrix(df: pd.DataFrame) -> np.ndarray:
 
             returnvalue[i][j] = returnvalue[j][i] = distance
     return returnvalue
-
-
-
-
-

@@ -1,11 +1,11 @@
-import math
+from .distance_to_affinity_matrix import distance_to_affinity_matrix
 import numpy as np
 import pandas as pd
 from sklearn import metrics
 from sklearn.cluster import SpectralClustering
 
 def spectral_clustering(dist_matrix: np.ndarray, clusters, random_state: int = None):
-    aff_matrix = np.cos(math.pi * dist_matrix)
+    aff_matrix = distance_to_affinity_matrix(dist_matrix)
         
     # setup results dataframe
     df_prep = []
