@@ -15,7 +15,7 @@ def spectral_clustering(dist_matrix: np.ndarray, clusters, random_state: int = N
     df = pd.DataFrame(df_prep, columns=['n', 'sc', 'vrc', 'dbi']) 
 
     # initialize VRC and labels
-    best_vrc = 0
+    best_sc = 0
     best_labels = None
 
     for i in df.index:
@@ -24,11 +24,11 @@ def spectral_clustering(dist_matrix: np.ndarray, clusters, random_state: int = N
             random_state = random_state, 
             affinity = 'precomputed',
             verbose = False,
-            assign_labels='discretize').fit(aff_matrix)
+            assign_labels='cluster_qr').fit(aff_matrix)
             
-        VRC = metrics.calinski_harabasz_score(dist_matrix, model.labels_)
-        if VRC > best_vrc:    
-            best_vrc = VRC
+        sc = metrics.silhouette_score(dist_matrix, model.labels_, metric="precomputed")
+        if sc > best_sc:    
+            best_sc = sc
             best_labels = model.labels_
         
         df.loc[i, 'sc'] = metrics.silhouette_score(dist_matrix, model.labels_, metric="precomputed")

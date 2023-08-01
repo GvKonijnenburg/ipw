@@ -13,7 +13,7 @@ def dbscan(dist_matrix: np.ndarray, eps_arr, min_samples_arr, random_state: int 
     df = pd.DataFrame(df_prep, columns=['eps', 'min_samples', 'n', 'sc', 'vrc', 'dbi']) 
 
     # initialize VRC and labels
-    best_vrc = 0
+    best_sc = 0
     best_labels = None
 
     # run clustering model
@@ -27,9 +27,9 @@ def dbscan(dist_matrix: np.ndarray, eps_arr, min_samples_arr, random_state: int 
         df.loc[i, 'n'] = n
         
         if n > 1:
-            vrc = metrics.calinski_harabasz_score(dist_matrix, model.labels_)
-            if vrc > best_vrc:
-                best_vrc = vrc
+            sc = metrics.silhouette_score(dist_matrix, model.labels_, metric="precomputed")
+            if sc > best_sc:
+                best_sc = sc
                 best_labels = model.labels_
     
             df.loc[i, 'sc'] = metrics.silhouette_score(dist_matrix, model.labels_, metric="precomputed")

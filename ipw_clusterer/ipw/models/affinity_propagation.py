@@ -16,7 +16,7 @@ def affinity_propagation(dist_matrix: np.ndarray, dampings: np.ndarray, random_s
     df = pd.DataFrame(df_prep, columns=['damping', 'n', 'sc', 'vrc', 'dbi']) 
     
     # initialize VRC and labels
-    best_vrc = 0
+    best_sc = 0
     best_labels = None
     centers = None
 
@@ -33,9 +33,9 @@ def affinity_propagation(dist_matrix: np.ndarray, dampings: np.ndarray, random_s
         df.loc[i, 'n'] = n
         
         if n > 1:
-            vrc = metrics.calinski_harabasz_score(dist_matrix, model.labels_)
-            if vrc > best_vrc:
-                best_vrc = vrc
+            sc =metrics.silhouette_score(dist_matrix, model.labels_, metric="precomputed")
+            if sc > best_sc:
+                best_sc = sc
                 best_labels = model.labels_
                 centers = model.cluster_centers_indices_
     

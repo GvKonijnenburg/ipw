@@ -12,7 +12,7 @@ def agglomerative_clustering(dist_matrix: np.ndarray, clusters, random_state: in
     df = pd.DataFrame(df_prep, columns=['n', 'sc', 'vrc', 'dbi']) 
     
     # initialize VRC and labels
-    best_vrc = 0
+    best_sc = 0
     best_labels = None
 
     for i in df.index:
@@ -21,9 +21,9 @@ def agglomerative_clustering(dist_matrix: np.ndarray, clusters, random_state: in
             metric = 'precomputed',
             linkage = 'average').fit(dist_matrix)
           
-        vrc = metrics.calinski_harabasz_score(dist_matrix, model.labels_)
-        if vrc > best_vrc:    
-            best_vrc = vrc
+        sc = metrics.silhouette_score(dist_matrix, model.labels_, metric="precomputed")
+        if sc > best_sc:    
+            best_sc = sc
             best_labels = model.labels_
         
         df.loc[i, 'sc'] = metrics.silhouette_score(dist_matrix, model.labels_, metric="precomputed")
