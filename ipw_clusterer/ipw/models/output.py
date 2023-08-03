@@ -5,7 +5,7 @@ def output(dist_matrix, results, labels):
     for i in range(min(labels), max(labels+1)):
         print(f'Cluster {i}: {sum(labels == i)}')
     print('----')
-    best = results[results['vrc'] == np.nanmax(results['vrc'])]
+    best = results[results['sc'] == np.nanmax(results['sc'])]
     n = best.index[0]
     print('Best result:')
     print('----')
