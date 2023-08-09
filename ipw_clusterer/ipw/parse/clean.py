@@ -13,6 +13,9 @@ def _clean_string(string:str) -> str:
         # remove '\n'
         returnvalue = returnvalue.replace('\\n', '')
 
+        # remove 'xxx'
+        returnvalue = returnvalue.replace('xxx', '')
+
         # normalize the string
         returnvalue = unicodedata.normalize('NFKC', returnvalue)
     return returnvalue

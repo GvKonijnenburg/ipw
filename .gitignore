@@ -172,3 +172,4 @@ cython_debug/
 
 /ipw_clusterer/trial
 log.txt
+/ipw_clusterer/notebook/output/*
